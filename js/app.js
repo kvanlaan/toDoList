@@ -12,7 +12,7 @@ import fetch from "isomorphic-fetch"
 // the following line, if uncommented, will enable browserify to push
 // a changed fn to you, with source maps (reverse map from compiled
 // code line # to source code line #), in realtime via websockets
-// -- browserify-hmr having install issues right now
+// -- browserify-hmr having instlist issues right now
 // if (module.hot) {
 //     module.hot.accept()
 //     module.hot.dispose(() => {
@@ -20,7 +20,7 @@ import fetch from "isomorphic-fetch"
 //     })
 // }
 
-// Check for ServiceWorker support before trying to install it
+// Check for ServiceWorker support before trying to instlist it
 // if ('serviceWorker' in navigator) {
 //     navigator.serviceWorker.register('./serviceworker.js').then(() => {
 //         // Registration was successful
@@ -42,7 +42,8 @@ function app () {
 
     var ItemModel = Backbone.Model.extend({
         defaults: {
-            dueDate: "none",
+            description: "",
+            date: "",
             done: false
         },
         initialize: function(taskName) {
@@ -55,29 +56,29 @@ function app () {
     var TodoView = React.createClass({
 
         _addItem: function(task) {
-            this.state.all.add(new ItemModel(task))
+            this.state.list.add(new ItemModel(task))
             this._update()
         },
         _update: function(){
             this.setState({
-                all: this.state.all,
-                done: this.state.all.where({done:true}),
-                undone: this.state.all.where({done:false}),
+                list: this.state.list,
+                done: this.state.list.where({done:true}),
+                incomplete: this.state.list.where({done:false}),
                 showing: location.hash.substr(1)
             })            
         },
         getInitialState: function() {
             return {
-                all: this.props.todoColl,
+                list: this.props.todoColl,
                 done: this.props.todoColl.where({done:true}),
-                undone: this.props.todoColl.where({done:false}),
+                incomplete: this.props.todoColl.where({done:false}),
                 showing: this.props.showing
             }
         },
         render: function() {
-            var coll = this.state.all
+            var coll = this.state.list
             if (this.state.showing === "done") coll = this.state.done
-            if (this.state.showing === "undone") coll = this.state.undone
+            if (this.state.showing === "incomplete") coll = this.state.incomplete
 
             return (
                 <div className="todoView">
@@ -95,7 +96,7 @@ function app () {
         render: function() {
             return (
                 <div className="tabs">
-                    {["all","done","undone"].map(this._genTab)}
+                    {["list","done","incomplete"].map(this._genTab)}
                 </div>
                 )
         }
@@ -110,19 +111,19 @@ function app () {
             var styleObj = {}
             var smiley = ""
             if (this.props.type === this.props.showing){
-            	styleObj.boxShadow = "0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #EED2EE, 0 0 2px 10px #eee"
+                styleObj.boxShadow = "0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #EED2EE, 0 0 2px 10px #eee"
 
             
-            if(this.props.type === "undone") {
-            	smiley = " \u2639 "
+            if(this.props.type === "incomplete") {
+                smiley = " \u263a "
             }
        
             if(this.props.type === "done") {
-            	smiley = " \u263a "
+                smiley = " \u263a "
             }  
 
-             if(this.props.type === "all") {
-            smiley = "	\uD83E\uDD13 "
+             if(this.props.type === "list") {
+            smiley = "  \u270E "
 
         }
     }
@@ -167,6 +168,26 @@ function app () {
     })
 
     var Item = React.createClass({
+         _handleDue: function(keyEvent) {
+            if (keyEvent.keyCode === 13) {
+                var inputDate = keyEvent.target.value
+                     this.props.itemModel.set({date: "Due:" + inputDate})
+            this.props.updater()
+           
+            keyEvent.target.value =""
+
+            }
+        },
+           _handleDescription: function(keyEvent) {
+            if (keyEvent.keyCode === 13) {
+                var inputDescription = keyEvent.target.value
+                     this.props.itemModel.set({description: inputDescription})
+            this.props.updater()
+           
+            keyEvent.target.value =""
+
+            }
+        },
         _toggleDone: function() {
             if (this.props.itemModel.get('done')) {
                 this.props.itemModel.set({done: false})
@@ -180,19 +201,43 @@ function app () {
         },
 
         render: function() {
-        	
-        	
+            
+            
             var buttonFiller = this.props.itemModel.get('done') ? "\u2713" : ' '    
-
+               var obj ={}
             var pObj = {}
+             var dObj = {}
             if (this.props.itemModel.get('done')){
                pObj.textDecoration = "line-through"
                pObj.fontStyle = "italic"
-            }             
+                obj.textDecoration = "line-through"
+               obj.fontStyle = "italic"
+                dObj.textDecoration = "line-through"
+            }       
+             
+             var inputObjDue = {}
+               if (this.props.itemModel.get('date') !== ""){
+               inputObjDue.display = "none"
+               obj.marginRight = "2%"
+            }  
+             
+             var inputObj = {}
+               if (this.props.itemModel.get('description') !== ""){
+               inputObj.display = "none"
+                dObj.fontStyle = "italic"
+                  dObj.fontSize = "large"
+                  dObj.fontWeight = "bold"
+            }        
 
             return (
-                <div className="todoItem" style={pObj}>
-                    <p>{this.props.itemModel.get('task')}</p>
+                <div className="todoItem"  date="">
+                    <p style={pObj}>{this.props.itemModel.get('task')}</p>
+            
+                    <input style={inputObj} className="description" placeholder="About:" onKeyDown={this._handleDescription} />
+                    <p style={dObj}>{this.props.itemModel.get('description')}</p>
+                 <input style={inputObjDue} className="date" placeholder="Due:" onKeyDown={this._handleDue} />
+
+                                <p style={obj}>{this.props.itemModel.get('date')}</p>
                     <button onClick={this._toggleDone}>{buttonFiller}</button>
                 </div>
                 )
@@ -201,7 +246,7 @@ function app () {
 
     var TodoRouter = Backbone.Router.extend({
         routes: {
-            "undone": "showUndone",
+            "incomplete": "showIncomplete",
             "done": "showDone",
             "*default": "home"
         },
@@ -212,11 +257,11 @@ function app () {
         },
 
         home: function() {
-            DOM.render(<TodoView showing="all" todoColl={new TodoCollection()}/>,document.querySelector('.container'))
+            DOM.render(<TodoView showing="list" todoColl={new TodoCollection()}/>,document.querySelector('.container'))
         },
 
-        showUndone: function() {
-            DOM.render(<TodoView showing="undone" todoColl={new TodoCollection()}/>,document.querySelector('.container'))            
+        showIncomplete: function() {
+            DOM.render(<TodoView showing="incomplete" todoColl={new TodoCollection()}/>,document.querySelector('.container'))            
         },
 
         initialize: function() {
