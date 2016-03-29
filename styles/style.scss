@@ -127,3 +127,107 @@ body {
 /**
  * App code
  */
+
+
+
+body {
+    background-color: lightpink;
+    font-family: "cursive";
+    font-weight: bold;
+    background-image: radial-gradient(#fff 10%, transparent 10%),
+    radial-gradient(#fff 10%, transparent 10%);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+}
+
+
+ .todoView {
+    max-width: 750px;
+    margin: auto;
+    margin-top: 10%;
+    text-align: center;
+    position:relative;
+
+
+    .tabs {
+        position: absolute;
+        top: 0px;
+        left: 55%;
+           text-align: center;
+        transform: translate(-50%,-100%);
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+
+
+        .tab {
+          background: #FCFBE3;
+          color: lightpink;
+          font-weight: bold;
+          display:flex;
+          text-align: center;
+          margin-bottom: 20px;
+          width: 90px;
+          height:25px;
+          margin-right:100px;
+            border: 1px dashed #ddd;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
+        }
+    }
+p .smiley {
+    display: block;
+}
+    input{
+        font-style: italic;
+        text-align: center;
+        color: lightpink;
+        background: #FCFBE3;
+        margin: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+    }
+
+    input:focus {
+        // box-shadow: -15px 10px 5px lavender;
+    
+    }
+
+    .todoList {
+        text-align: left;
+
+        .todoItem {
+            background: #FCFBE3;
+            padding: 2%;
+            margin: 20px;
+            margin-bottom: 5%;
+            display:flex;
+            justify-content: space-between;
+            box-shadow: -15px 10px 5px lavender;
+            border: 1px dashed #ddd;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
+
+
+            p {
+                display: inline-block;
+                color: lightpink;
+                flex:1;
+            }
+
+            button {
+                background: lavender;
+                border: 3px solid grey;
+                padding: 0 3px;
+                margin: 10px;
+                right:0;
+                color: maroon;
+                width: 30px;
+                height: 30px;
+                line-height: 24px;
+                font-size: 24px;
+            }
+
+            button:focus {
+                outline:none;
+            }
+        }
+    }
+ }
