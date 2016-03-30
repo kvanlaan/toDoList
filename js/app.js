@@ -44,7 +44,9 @@ function app () {
         defaults: {
             description: "",
             date: "",
-            done: false
+            done: false,
+            display: "inline",
+            placeholderDesc: "About:"
         },
         initialize: function(taskName) {
             this.set({task: taskName})
@@ -174,7 +176,7 @@ function app () {
                      this.props.itemModel.set({date: "Due: " + inputDate})
             this.props.updater()
            
-            keyEvent.target.value =""
+            // keyEvent.target.value =""
 
             }
         },
@@ -184,13 +186,20 @@ function app () {
                      this.props.itemModel.set({description: inputDescription})
             this.props.updater()
            
-            keyEvent.target.value =""
+            // keyEvent.target.value =""
 
             }
         },
-        _editDesc: function(){
-               this.props.itemModel.set({description: ""})
+        _delete: function(){
+               this.props.itemModel.set({display: "none"})
                       this.props.updater()
+            },
+        _editDesc: function(){
+             this.props.itemModel.set({placeholderDesc: this.props.itemModel.get('description')})
+               this.props.itemModel.set({description: ""})
+
+                      this.props.updater()
+
             },
 
           _editDate: function(){
@@ -212,8 +221,10 @@ function app () {
         },
 
         render: function() {
-            
-            
+            var itemObj ={}
+               if (this.props.itemModel.get('display') === "none"){
+                itemObj.display ="none"
+            }
             var buttonFiller = this.props.itemModel.get('done') ? "\u2713" : ' '    
                var obj ={}
             var pObj = {}
@@ -246,12 +257,12 @@ function app () {
             }        
 
             return (
-                <div className="todoItem"  date="">
+                <div style={itemObj} className="todoItem"  date="">
               
                     <p style={pObj}>{this.props.itemModel.get('task')}</p>
                     <button style={edescObj} onClick={this._editDesc}>{"\u270e"}</button>
 <p style={dObj}>{this.props.itemModel.get('description')}</p>
-                    <input style={inputObj} className="description" placeholder="About:" onKeyDown={this._handleDescription} />
+        <input style={inputObj} className="description" placeholder={this.props.itemModel.get('placeholderDesc')} onKeyDown={this._handleDescription} />
                     
                  <input style={inputObjDue} className="date" placeholder="Due:" onKeyDown={this._handleDue} />
                      <button className="dateEdit" style={edateObj} onClick={this._editDate}>{"\u270e"}</button>
@@ -259,6 +270,8 @@ function app () {
                                 <p style={obj}>{this.props.itemModel.get('date')}</p>
                             
                     <button onClick={this._toggleDone}>{buttonFiller}</button>
+                     <button onClick={this._delete}>{"\u2715"}</button>
+
                 </div>
                 )
         }
