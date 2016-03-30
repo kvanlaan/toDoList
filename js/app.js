@@ -228,14 +228,14 @@ function app () {
                obj.fontStyle = "italic"
                 dObj.textDecoration = "line-through"
             }       
-             var edateObj ={display: "none", width: "6%", marginRight: "1%"}
+             var edateObj ={display: "none", width: "4s%", marginRight: "1%"}
              var inputObjDue = {}
                if (this.props.itemModel.get('date') !== ""){
                inputObjDue.display = "none"
                obj.marginRight = "2%"
                edateObj.display ="inline"
             }  
-             var edescObj ={display: "none", width: "6%", marginRight: "1%"}
+             var edescObj ={display: "none", width: "4%", marginRight: "1%"}
              var inputObj = {}
                if (this.props.itemModel.get('description') !== ""){
                inputObj.display = "none"
@@ -249,12 +249,12 @@ function app () {
                 <div className="todoItem"  date="">
               
                     <p style={pObj}>{this.props.itemModel.get('task')}</p>
-                    <button style={edescObj} onClick={this._editDesc}>edit</button>
+                    <button style={edescObj} onClick={this._editDesc}>{"\u270e"}</button>
 <p style={dObj}>{this.props.itemModel.get('description')}</p>
                     <input style={inputObj} className="description" placeholder="About:" onKeyDown={this._handleDescription} />
                     
                  <input style={inputObjDue} className="date" placeholder="Due:" onKeyDown={this._handleDue} />
-                     <button className="dateEdit" style={edateObj} onClick={this._editDate}>edit </button>
+                     <button className="dateEdit" style={edateObj} onClick={this._editDate}>{"\u270e"}</button>
 
                                 <p style={obj}>{this.props.itemModel.get('date')}</p>
                             
