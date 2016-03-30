@@ -111,19 +111,19 @@ function app () {
             var styleObj = {}
             var smiley = ""
             if (this.props.type === this.props.showing){
-                styleObj.boxShadow = "0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #EED2EE, 0 0 2px 10px #eee"
+                styleObj.background ="grey"               
 
             
             if(this.props.type === "incomplete") {
-                smiley = " \u263a "
+                smiley = " \u2710 "
             }
        
             if(this.props.type === "done") {
-                smiley = " \u263a "
+                smiley = " \u270E " 
             }  
 
              if(this.props.type === "list") {
-            smiley = "  \u270E "
+            smiley = "  \u270D "
 
         }
     }
@@ -147,7 +147,7 @@ function app () {
         },
 
         render: function() {
-            return <input onKeyDown={this._handleKeyDown} />
+            return <input placeholder="What do you need to do?" onKeyDown={this._handleKeyDown} />
         }
     })
 
@@ -188,6 +188,17 @@ function app () {
 
             }
         },
+        _editDesc: function(){
+               this.props.itemModel.set({description: ""})
+                      this.props.updater()
+            },
+
+          _editDate: function(){
+               this.props.itemModel.set({date: ""})
+                      this.props.updater()
+            },
+
+
         _toggleDone: function() {
             if (this.props.itemModel.get('done')) {
                 this.props.itemModel.set({done: false})
@@ -206,38 +217,47 @@ function app () {
             var buttonFiller = this.props.itemModel.get('done') ? "\u2713" : ' '    
                var obj ={}
             var pObj = {}
-             var dObj = {}
+             var dObj = {top: "10%", maxWidth: "22%", marginTop: "0"}
+             var tObj = {}
+       
             if (this.props.itemModel.get('done')){
+         
                pObj.textDecoration = "line-through"
                pObj.fontStyle = "italic"
                 obj.textDecoration = "line-through"
                obj.fontStyle = "italic"
                 dObj.textDecoration = "line-through"
             }       
-             
+             var edateObj ={display: "none", width: "6%", marginRight: "1%"}
              var inputObjDue = {}
                if (this.props.itemModel.get('date') !== ""){
                inputObjDue.display = "none"
                obj.marginRight = "2%"
+               edateObj.display ="inline"
             }  
-             
+             var edescObj ={display: "none", width: "6%", marginRight: "1%"}
              var inputObj = {}
                if (this.props.itemModel.get('description') !== ""){
                inputObj.display = "none"
                 dObj.fontStyle = "italic"
                   dObj.fontSize = "large"
                   dObj.fontWeight = "bold"
+                edescObj.display ="block"
             }        
 
             return (
                 <div className="todoItem"  date="">
+              
                     <p style={pObj}>{this.props.itemModel.get('task')}</p>
-            
+                    <button style={edescObj} onClick={this._editDesc}>edit</button>
+<p style={dObj}>{this.props.itemModel.get('description')}</p>
                     <input style={inputObj} className="description" placeholder="About:" onKeyDown={this._handleDescription} />
-                    <p style={dObj}>{this.props.itemModel.get('description')}</p>
+                    
                  <input style={inputObjDue} className="date" placeholder="Due:" onKeyDown={this._handleDue} />
+                     <button className="dateEdit" style={edateObj} onClick={this._editDate}>edit </button>
 
                                 <p style={obj}>{this.props.itemModel.get('date')}</p>
+                            
                     <button onClick={this._toggleDone}>{buttonFiller}</button>
                 </div>
                 )

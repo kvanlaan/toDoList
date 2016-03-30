@@ -131,34 +131,48 @@ body {
 
 
 body {
-    background-color: lightpink;
-    font-family: "cursive";
+
+  //    background-image: url(flowers.jpeg);
+  // background-repeat:repeat-x;
+     font-family: "cursive";
     font-weight: bold;
-    background-image: radial-gradient(#fff 10%, transparent 10%),
-    radial-gradient(#fff 10%, transparent 10%);
-    background-size: 30px 30px;
-    background-position: 0 0, 15px 15px;
+    // background-color: lightpink;
+    // background-image: radial-gradient(#fff 10%, transparent 10%),
+    // radial-gradient(#fff 10%, transparent 10%);
+    // background-size: 30px 30px;
+    // background-position: 0 0, 15px 15px;
+
+    background-color:lavender;
+background-image: 
+radial-gradient(circle at 100% 150%, lavender 24%, silver 25%, silver 28%, lavender 29%, lavender 36%, silver 36%, silver 40%, transparent 40%, transparent),
+radial-gradient(circle at 0    150%, lavender 24%, silver 25%, silver 28%, lavender 29%, lavender 36%, silver 36%, silver 40%, transparent 40%, transparent),
+radial-gradient(circle at 50%  100%, silver 10%, lavender 11%, lavender 23%, silver 24%, silver 30%, lavender 31%, lavender 43%, silver 44%, silver 50%, lavender 51%, lavender 63%, silver 64%, silver 71%, transparent 71%, transparent),
+radial-gradient(circle at 100% 50%, silver 5%, lavender 6%, lavender 15%, silver 16%, silver 20%, lavender 21%, lavender 30%, silver 31%, silver 35%, lavender 36%, lavender 45%, silver 46%, silver 49%, transparent 50%, transparent),
+radial-gradient(circle at 0    50%, silver 5%, lavender 6%, lavender 15%, silver 16%, silver 20%, lavender 21%, lavender 30%, silver 31%, silver 35%, lavender 36%, lavender 45%, silver 46%, silver 49%, transparent 50%, transparent);
+background-size:100px 50px;
 }
 
-input{
+textarea, input{
+
         font-style: italic;
         text-align: center;
         color: lightpink;
-
+        width: 30%;
         background: #FCFBE3;
         margin: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+       // box-shadow:  0 0 0 0 5px rgba(0, 0, 0, 0.2);
+              // box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset 0 20px 0 50px rgba(0, 0, 0, 0.1);
+
     }
 
-    // input:focus {
-    //     // box-shadow: -15px 10px 5px lavender;
-    
-    // }
+    textarea:focus, input:focus{
+    outline: none;
+}
 
     ::-webkit-input-placeholder {
-        color: lightpink;
+        color: rgba(0, 0, 0, 0.3);
         font-weight: bold;
-        opacity: .9;
+        opacity: .7;
     }
 
 
@@ -169,9 +183,6 @@ input{
     text-align: center;
     position:relative;
 
-    input {
-        width: 30%;
-    }
 
     .tabs {
         position: absolute;
@@ -209,6 +220,16 @@ p .smiley {
   
     .todoList {
         text-align: left;
+ 
+    input {
+        width: 18%;
+        font-size: xx-large;
+    }
+     ::-webkit-input-placeholder {
+        color: lightpink;
+        font-weight: bold;
+        opacity: .7;
+    }
 
         .todoItem {
             background: #FCFBE3;
@@ -216,6 +237,7 @@ p .smiley {
             font-size: 50px;
             margin: 20px;
             margin-bottom: 5%;
+            height: 120px;
             display:flex;
             justify-content: space-between;
             box-shadow: -15px 10px 5px lavender;
@@ -226,8 +248,9 @@ p .smiley {
             p {
                 display: inline-block;
                 color: lightpink;
-                flex:1;
+                // flex:2;
                 margin-bottom: 0;
+                margin-right: 2px;
             }
 
             button {
