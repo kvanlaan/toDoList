@@ -221,6 +221,10 @@ function app () {
         },
 
         render: function() {
+
+            var buttonX = {bottom: "0", display: "block", marginBottom: "0"}
+        var buttonCheck = {width: "100%", display: "block", marginBottom: "100%"}
+
             var itemObj ={}
                if (this.props.itemModel.get('display') === "none"){
                 itemObj.display ="none"
@@ -236,6 +240,7 @@ function app () {
                pObj.textDecoration = "line-through"
                pObj.fontStyle = "italic"
                 obj.textDecoration = "line-through"
+
                obj.fontStyle = "italic"
                 dObj.textDecoration = "line-through"
             }       
@@ -243,6 +248,7 @@ function app () {
              var inputObjDue = {}
                if (this.props.itemModel.get('date') !== ""){
                inputObjDue.display = "none"
+               obj.fontSize = "xx-large"
                obj.marginRight = "2%"
                edateObj.display ="inline"
             }  
@@ -268,9 +274,10 @@ function app () {
                      <button className="dateEdit" style={edateObj} onClick={this._editDate}>{"\u270e"}</button>
 
                                 <p style={obj}>{this.props.itemModel.get('date')}</p>
-                            
-                    <button onClick={this._toggleDone}>{buttonFiller}</button>
-                     <button onClick={this._delete}>{"\u2715"}</button>
+                           <div> 
+                    <button style={buttonCheck} onClick={this._toggleDone}>{buttonFiller}</button>
+                     <button style={buttonX} onClick={this._delete}>{"\u2715"}</button>
+                     </div>
 
                 </div>
                 )
