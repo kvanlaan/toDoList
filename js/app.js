@@ -171,7 +171,7 @@ function app () {
          _handleDue: function(keyEvent) {
             if (keyEvent.keyCode === 13) {
                 var inputDate = keyEvent.target.value
-                     this.props.itemModel.set({date: "Due:" + inputDate})
+                     this.props.itemModel.set({date: "Due: " + inputDate})
             this.props.updater()
            
             keyEvent.target.value =""
