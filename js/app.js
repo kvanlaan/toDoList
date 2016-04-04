@@ -36,7 +36,9 @@ import fetch from "isomorphic-fetch"
 import DOM from 'react-dom'
 import React, {Component} from 'react'
 
-import Backbone from 'backbone'
+import Backbone from 'bbfire'
+import _ from 'underscore'
+import Firebase from 'firebase'
 
 function app () {
 
@@ -46,53 +48,73 @@ function app () {
             date: "",
             done: false,
             display: "inline",
-            placeholderDesc: "About:"
-        },
-        initialize: function(taskName) {
-            this.set({task: taskName})
+            placeholderDesc: "About:",
+            delete:false
+
         }
     })
-    var TodoCollection = Backbone.Collection.extend({
-        model: ItemModel
-    })
-    var TodoView = React.createClass({
 
-        _addItem: function(task) {
-            this.state.list.add(new ItemModel(task))
-            this._update()
+    var TodoCollection = Backbone.Firebase.Collection.extend({
+        model: ItemModel,
+        initialize: function() {
+            this.url = `https://katrinatodolist.firebaseio.com/tasks`
+        }
+    })
+    
+    var ToDoView = React.createClass({
+
+          _addItem: function(taskName) {
+                var mod = new ItemModel({text:taskName})
+            this.state.todoColl.add(mod.attributes)
+            this._updater()
         },
-        _update: function(){
-            this.setState({
-                list: this.state.list,
-                done: this.state.list.where({done:true}),
-                incomplete: this.state.list.where({done:false}),
+      
+         _delete: function(){
+           this.state.todoColl = this.state.todoColl.where({delete:false})
+            this._updater()
+        },
+
+        _updater: function(){
+             this.setState({
+                todoColl: this.state.todoColl,
+                done: this.state.todoColl.where({done:true}),
+                incomplete: this.state.todoColl.where({done:false}),
                 showing: location.hash.substr(1)
-            })            
+            })           
         },
-        getInitialState: function() {
+
+        componentWillMount: function() {
+            var self = this
+            this.props.todoColl.on('sync',function(){self.forceUpdate()})
+        },
+        
+         getInitialState: function() {
             return {
-                list: this.props.todoColl,
+                todoColl: this.props.todoColl,
                 done: this.props.todoColl.where({done:true}),
                 incomplete: this.props.todoColl.where({done:false}),
                 showing: this.props.showing
             }
         },
+
         render: function() {
-            var coll = this.state.list
-            if (this.state.showing === "done") coll = this.state.done
-            if (this.state.showing === "incomplete") coll = this.state.incomplete
+            var coll = this.state.todoColl
+            if (this.state.showing === "done") coll = this.state.todoColl.where({done:true})
+            if (this.state.showing === "incomplete") coll = this.state.todoColl.where({done:false})
 
             return (
                 <div className="todoView">
-                    <Tabs updater={this._update} showing={this.state.showing} />
+                    <Tabs updater={this._updater} showing={this.state.showing} />
                     <ItemAdder adderFunc={this._addItem}/>
-                    <TodoList updater={this._update} todoColl={coll}/>
+                    <TodoList updater={this._updater} delete={this._delete} todoColl={coll}/>
                 </div>  
                 )
         }
     })
     var Tabs = React.createClass({
-        _genTab: function(tabType,i) {
+
+        
+        _genTab: function(tabType, i) {
             return <Tab updater={this.props.updater} key={i} type={tabType} showing={this.props.showing} />
         },
         render: function() {
@@ -104,11 +126,12 @@ function app () {
         }
     })
     var Tab = React.createClass({
-        _changeRoute: function() {
+         _changeRoute: function() {
             location.hash = this.props.type
             this.props.updater()
         },
-
+        
+       
         render: function() {
             var styleObj = {}
             var smiley = ""
@@ -157,12 +180,12 @@ function app () {
 
         _makeItem: function(model,i) {
             console.log(model, i)
-            return <Item key={i} updater={this.props.updater} itemModel={model} />
+            return <Item delete={this.props.delete} key={i} updater={this.props.updater} itemModel={model} />
         },
 
         render: function() {
             return (
-                <div className="todoList">
+                <div delete ={this.props.delete} todoColl={this.props.todoColl} className="todoList">
                     {this.props.todoColl.map(this._makeItem)}
                 </div>
                 )
@@ -190,13 +213,15 @@ function app () {
 
             }
         },
-        _delete: function(){
-               this.props.itemModel.set({display: "none"})
-                      this.props.updater()
-            },
+        _deleteItem: function(){
+                this.props.itemModel.set({display: "none"})
+               this.props.itemModel.set({delete:true})
+               this.props.delete
+              this.props.updater()
+        },
         _editDesc: function(){
              this.props.itemModel.set({placeholderDesc: this.props.itemModel.get('description')})
-               this.props.itemModel.set({description: ""})
+            this.props.itemModel.set({description: ""})
 
                       this.props.updater()
 
@@ -211,11 +236,9 @@ function app () {
         _toggleDone: function() {
             if (this.props.itemModel.get('done')) {
                 this.props.itemModel.set({done: false})
-
             }
             else {
                 this.props.itemModel.set({done: true})
-            
             }
             this.props.updater()
         },
@@ -223,15 +246,14 @@ function app () {
         render: function() {
 
             var buttonX = {bottom: "0", display: "block", marginBottom: "0"}
-        var buttonCheck = {width: "100%", display: "block", marginBottom: "100%"}
-
+            var buttonCheck = {width: "100%", display: "block", marginBottom: "100%"}
             var itemObj ={}
                if (this.props.itemModel.get('display') === "none"){
                 itemObj.display ="none"
             }
             var buttonFiller = this.props.itemModel.get('done') ? "\u2713" : ' '    
                var obj ={}
-            var pObj = {}
+                var pObj = {}
              var dObj = {top: "10%", maxWidth: "22%", marginTop: "0"}
              var tObj = {}
        
@@ -241,7 +263,7 @@ function app () {
                pObj.fontStyle = "italic"
                 obj.textDecoration = "line-through"
 
-               obj.fontStyle = "italic"
+                obj.fontStyle = "italic"
                 dObj.textDecoration = "line-through"
             }       
              var edateObj ={display: "none", width: "4s%", marginRight: "1%"}
@@ -253,8 +275,8 @@ function app () {
                edateObj.display ="inline"
             }  
              var edescObj ={display: "none", width: "4%", marginRight: "1%"}
-             var inputObj = {}
-               if (this.props.itemModel.get('description') !== ""){
+             var inputObj = {display:"inline"}
+               if (this.props.itemModel.get("description") !== ""){
                inputObj.display = "none"
                 dObj.fontStyle = "italic"
                   dObj.fontSize = "large"
@@ -265,51 +287,53 @@ function app () {
             return (
                 <div style={itemObj} className="todoItem"  date="">
               
-                    <p style={pObj}>{this.props.itemModel.get('task')}</p>
+                    <p style={pObj}>{this.props.itemModel.get('text')}</p>
                     <button style={edescObj} onClick={this._editDesc}>{"\u270e"}</button>
-<p style={dObj}>{this.props.itemModel.get('description')}</p>
-        <input style={inputObj} className="description" placeholder={this.props.itemModel.get('placeholderDesc')} onKeyDown={this._handleDescription} />
+                    <p style={dObj}>{this.props.itemModel.get('description')}</p>
+                    <input style={inputObj} placeholder={this.props.itemModel.get('placeholderDesc')} onKeyDown={this._handleDescription} />
                     
-                 <input style={inputObjDue} className="date" placeholder="Due:" onKeyDown={this._handleDue} />
+                    <input style={inputObjDue} placeholder="Due:" onKeyDown={this._handleDue} />
                      <button className="dateEdit" style={edateObj} onClick={this._editDate}>{"\u270e"}</button>
 
                                 <p style={obj}>{this.props.itemModel.get('date')}</p>
                            <div> 
                     <button style={buttonCheck} onClick={this._toggleDone}>{buttonFiller}</button>
-                     <button style={buttonX} onClick={this._delete}>{"\u2715"}</button>
+                     <button style={buttonX} onClick={this._deleteItem}>{"\u2715"}</button>
                      </div>
 
-                </div>
+                    </div>
                 )
         }
     })
 
     var TodoRouter = Backbone.Router.extend({
-        routes: {
-            "incomplete": "showIncomplete",
-            "done": "showDone",
-            "*default": "home"
-        },
+            routes: {
+                "*default": "listView",
+                "done": "doneView",
+                "incomplete": "incompleteView"
+            },
 
-        showDone: function(){
-            console.log('showing done')
-            DOM.render(<TodoView showing="done" todoColl={new TodoCollection()}/>,document.querySelector('.container'))
-        },
+            incompleteView: function() {
+                var tc = new TodoCollection()
+                DOM.render( <ToDoView showing="incomplete" todoColl ={tc}/>,document.querySelector('.container'))
+                    },
+            doneView: function() {
+                var tc = new TodoCollection()
+                DOM.render( <ToDoView showing="done" todoColl ={tc}/>,document.querySelector('.container'))
+                    },
 
-        home: function() {
-            DOM.render(<TodoView showing="list" todoColl={new TodoCollection()}/>,document.querySelector('.container'))
-        },
+            listView: function() {
+                var tc = new TodoCollection()
+                DOM.render( <ToDoView showing="list" todoColl ={tc}/>,document.querySelector('.container'))
+                    },
 
-        showIncomplete: function() {
-            DOM.render(<TodoView showing="incomplete" todoColl={new TodoCollection()}/>,document.querySelector('.container'))            
-        },
+                    initialize: function() {
+                        Backbone.history.start()
+                    }
+            }) 
 
-        initialize: function() {
-            Backbone.history.start()
-        }
-    })
     var pr = new TodoRouter()
 
-}
+    }
 
 app()
