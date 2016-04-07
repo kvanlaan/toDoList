@@ -1,5 +1,5 @@
 # toDoList
-A to-do list built with React featuring three different views: list, done, incomplete. Features ability to check completed items, delete items, and edit description and due date for each item.
+A To-Do list built with React featuring three different views: list, done, incomplete. Features ability to toggle completed items, delete items, and edit each item's description and due date
 
 # Todo List
 
