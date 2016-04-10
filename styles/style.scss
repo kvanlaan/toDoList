@@ -187,13 +187,11 @@ a:hover {
 
 
 .splashUser {
-  position: absolute;
   top: 320px;
   margin-left: 42%;
   width: 16%;
 }
 .splashPass {
-  position: absolute;
   top: 350px;
   margin-left: 42%;
   width: 16%;
@@ -201,13 +199,14 @@ a:hover {
 }
 
 .buttonUser {
-    position: absolute;
-    top: 420px;
-    margin-left: 43%;
-    margin-right: 0;
+    margin-top: 5px;
+    top: 425px;
+    margin-left: 42%;
+    margin-right: 2%;
     background: grey;
     padding: 5px;
     color: lightpink;
+    display:inline-block;   
     width: 7%;
     height: 60px;
      border: 1px dashed #ddd;
@@ -216,10 +215,10 @@ a:hover {
 }
 
 .buttonPass {
-    position: absolute;
-    top: 420px;
-    margin-left: 51%;
+       margin-top: 5px;
+    top: 425px;
     background: grey;
+    margin-left:0;
     padding: 5px;
     color: lightpink;
     width: 7%;

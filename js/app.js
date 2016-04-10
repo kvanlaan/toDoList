@@ -402,6 +402,7 @@ var Header = React.createClass ({
       },
 
       showSplashPage: function() {
+        this.ref.unauth()
         var boundSignerUpper = this._signUserUp.bind(this)
         var boundLoggerInner = this._logUserIn.bind(this)
 
