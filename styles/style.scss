@@ -1,6 +1,5 @@
 @import "../bower_components/normalize-scss/_normalize.scss";
 @import "../bower_components/typeplate-starter-kit/scss/_typeplate.scss";
-
 p+p {
     text-indent: 0;
     margin-top: 0;
@@ -12,11 +11,13 @@ p {
     margin-right: auto;
 }
 
-ul, ol {
+ul,
+ol {
     max-width: 80ch;
     margin-left: 0;
     margin-right: auto;
 }
+
 
 /**
  * BOX-SIZING
@@ -27,9 +28,10 @@ ul, ol {
 *:after {
     box-sizing: border-box;
     transition-duration: 0.2s;
-    transition-property: all;//opacity, transform, color, background-color, border-color, z-index, background-image;
+    transition-property: all; //opacity, transform, color, background-color, border-color, z-index, background-image;
     transition-timing-function: ease;
 }
+
 
 /**
  * GRIDS
@@ -40,14 +42,12 @@ ul, ol {
     text-align: justify;
     font-size: 0;
     position: relative;
-
     > * {
         display: inline-block;
         width: 100%;
         font-size: 1rem;
         text-align: left;
     }
-
     &:after {
         display: table;
         width: 100%;
@@ -77,13 +77,13 @@ ul, ol {
 @include grid(2);
 @include grid(4);
 @include grid(8);
-@include grid_r(2,400);
-@include grid_r(2,800);
-@include grid_r(4,400);
-@include grid_r(4,800);
-@include grid_r(8,800);
-@include grid_r(8,1024);
-@include grid_r(8,1280);
+@include grid_r(2, 400);
+@include grid_r(2, 800);
+@include grid_r(4, 400);
+@include grid_r(4, 800);
+@include grid_r(8, 800);
+@include grid_r(8, 1024);
+@include grid_r(8, 1280);
 
 /**
  * GENERAL
@@ -92,9 +92,11 @@ ul, ol {
 img {
     max-width: 100%;
 }
+
 body {
     font-family: 'San Francisco', 'Helvetica', 'Trebuchet MS', Arial, sans-serif;
 }
+
 
 /**
  * PACE (automatic pre-loader thingy)
@@ -124,127 +126,214 @@ body {
     opacity: 1;
 }
 
+
 /**
  * App code
  */
 
-
-
 body {
-
-  //    background-image: url(flowers.jpeg);
-  // background-repeat:repeat;
-
-     font-family: "cursive";
+    box-sizing: border-box;
+    font-family: "cursive";
     font-weight: bold;
-    // background-color: lightpink;
-    // background-image: radial-gradient(#fff 10%, transparent 10%),
-    // radial-gradient(#fff 10%, transparent 10%);
-    // background-size: 30px 30px;
-    // background-position: 0 0, 15px 15px;
-
-    background-color:lavender;
-background-image: 
-radial-gradient(circle at 100% 150%, lavender 24%, silver 25%, silver 28%, lavender 29%, lavender 36%, silver 36%, silver 40%, transparent 40%, transparent),
-radial-gradient(circle at 0    150%, lavender 24%, silver 25%, silver 28%, lavender 29%, lavender 36%, silver 36%, silver 40%, transparent 40%, transparent),
-radial-gradient(circle at 50%  100%, silver 10%, lavender 11%, lavender 23%, silver 24%, silver 30%, lavender 31%, lavender 43%, silver 44%, silver 50%, lavender 51%, lavender 63%, silver 64%, silver 71%, transparent 71%, transparent),
-radial-gradient(circle at 100% 50%, silver 5%, lavender 6%, lavender 15%, silver 16%, silver 20%, lavender 21%, lavender 30%, silver 31%, silver 35%, lavender 36%, lavender 45%, silver 46%, silver 49%, transparent 50%, transparent),
-radial-gradient(circle at 0    50%, silver 5%, lavender 6%, lavender 15%, silver 16%, silver 20%, lavender 21%, lavender 30%, silver 31%, silver 35%, lavender 36%, lavender 45%, silver 46%, silver 49%, transparent 50%, transparent);
-background-size:100px 50px;
+    background-color: lavender;
+    background-image: radial-gradient(circle at 100% 150%, lavender 24%, silver 25%, silver 28%, lavender 29%, lavender 36%, silver 36%, silver 40%, transparent 40%, transparent), radial-gradient(circle at 0 150%, lavender 24%, silver 25%, silver 28%, lavender 29%, lavender 36%, silver 36%, silver 40%, transparent 40%, transparent), radial-gradient(circle at 50% 100%, silver 10%, lavender 11%, lavender 23%, silver 24%, silver 30%, lavender 31%, lavender 43%, silver 44%, silver 50%, lavender 51%, lavender 63%, silver 64%, silver 71%, transparent 71%, transparent), radial-gradient(circle at 100% 50%, silver 5%, lavender 6%, lavender 15%, silver 16%, silver 20%, lavender 21%, lavender 30%, silver 31%, silver 35%, lavender 36%, lavender 45%, silver 46%, silver 49%, transparent 50%, transparent), radial-gradient(circle at 0 50%, silver 5%, lavender 6%, lavender 15%, silver 16%, silver 20%, lavender 21%, lavender 30%, silver 31%, silver 35%, lavender 36%, lavender 45%, silver 46%, silver 49%, transparent 50%, transparent);
+    background-size: 100px 50px;
 }
 
-textarea, input{
+textarea, input {
+    font-style: italic;
+    text-align: center;
+    color: lightpink;
+    width: 30%;
+    background: #FCFBE3;
+    margin: 10px;
+    box-shadow:  0 0 0 0 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset 0 20px 0 50px rgba(0, 0, 0, 0.1);
+}
 
-        font-style: italic;
-        text-align: center;
-        color: lightpink;
-        width: 30%;
-        background: #FCFBE3;
-        margin: 10px;
-       // box-shadow:  0 0 0 0 5px rgba(0, 0, 0, 0.2);
-              // box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset 0 20px 0 50px rgba(0, 0, 0, 0.1);
-
-    }
-
-    textarea:focus, input:focus{
+textarea:focus, input:focus {
     outline: none;
 }
 
-    ::-webkit-input-placeholder {
-        color: rgba(0, 0, 0, 0.3);
-        font-weight: bold;
-        opacity: .7;
-    }
+::-webkit-input-placeholder {
+    color: rgba(0, 0, 0, 0.3);
+    font-weight: bold;
+    opacity: .7;
+}
+
+a {
+    color: lightpink;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.error {
+    margin-top: 110px;
+      top: 490px;
+  margin-left: 320px;
+    font-size: 20px;
+    background: #fff;
+    text-align: center;
+    color: lightpink; 
+    font-weight: bold;
+    width: 155px;
+    border: 1px dashed #ddd;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee; 
+  }
 
 
- .todoView {
+.splashUser {
+  position: absolute;
+  top: 300px;
+  margin-left: 40%;
+  width: 20%;
+}
+.splashPass {
+  position: absolute;
+  top: 340px;
+  margin-left: 40%;
+  width: 20%;
+  
+}
+
+.buttonUser {
+    position: absolute;
+    top: 400px;
+    margin-left: 43%;
+    margin-right: 0;
+    background: grey;
+    padding: 5px;
+    color: lightpink;
+    width: 7%;
+    height: 60px;
+     border: 1px dashed #ddd;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee; 
+  
+}
+
+.buttonPass {
+    position: absolute;
+    top: 400px;
+    margin-left: 51%;
+    background: grey;
+    padding: 5px;
+    color: lightpink;
+    width: 7%;
+    height: 60px;
+     border: 1px dashed #ddd;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee; 
+  
+}
+.tagLine {
+    position: relative;
+    top: 128px;
+    font-size: 20px;
+    margin: auto;
+    background: grey;
+    text-align: center;
+    vertical-align: center;
+    color: lightpink;
+    font-weight: bold;
+    width: 220px;
+    border: 1px dashed #ddd;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
+}
+
+
+ h1 {
+    position: relative;
+    font-size: 60px;
+    top: 100px;
+    left:40%;
+    margin-left:0;
+    margin-bottom: 0;
+    background: #FCFBE3;
+    text-align: center;
+    vertical-align: center;
+    color: lightpink;
+    font-weight: bold;
+    width: 20%;
+    border: 1px dashed #ddd;
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
+}
+
+.todoView {
     max-width: 950px;
     margin: auto;
     margin-top: 10%;
     text-align: center;
-    position:relative;
-
-
+    position: relative;
+    .log {
+        position: fixed;
+        top: 5%;
+        right: 5%;
+        font-size: 20px;
+        margin: 0;
+        background: #FCFBE3;
+        text-decoration: none;
+        color: lightpink;
+        font-weight: bold;
+        padding: 0;
+        width: 70px;
+        height: 30px;
+        border: 1px dashed #ddd;
+        box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
+    }
+    .log:hover {
+        background-color: grey;
+    }
     .tabs {
         position: absolute;
         top: 0px;
         left: 55%;
         font-size: 40px;
-           text-align: center;
-        transform: translate(-50%,-100%);
+        text-align: center;
+        transform: translate(-50%, -100%);
         margin: auto;
         display: flex;
         justify-content: space-between;
-
-
         .tab {
-          background: #FCFBE3;
-          color: lightpink;
-          font-weight: bold;
-          display:flex;
-          text-align: center;
-          margin-bottom: 20px;
-          width: 220px;
-          height:50px;
-          margin-right:100px;
+            background: #FCFBE3;
+            color: lightpink;
+            font-weight: bold;
+            display: flex;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 220px;
+            height: 50px;
+            margin-right: 100px;
             border: 1px dashed #ddd;
-    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
+            box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
         }
     }
-
-
-p .smiley {
-    display: block;
-}
-    
-
-  
+    p .smiley {
+        display: block;
+    }
     .todoList {
         text-align: left;
- 
-    input {
-        width: 18%;
-        font-size: xx-large;
-    }
-     ::-webkit-input-placeholder {
-        color: lightpink;
-        font-weight: bold;
-        opacity: .7;
-    }
-
+        input {
+            width: 18%;
+            font-size: xx-large;
+        }
+        ::-webkit-input-placeholder {
+            color: lightpink;
+            font-weight: bold;
+            opacity: .7;
+        }
         .todoItem {
             background: #FCFBE3;
             padding: 2%;
             font-size: 50px;
             margin: 20px;
             margin-bottom: 5%;
-            display:flex;
+            display: flex;
             justify-content: space-between;
             box-shadow: -15px 10px 5px lavender;
             border: 1px dashed #ddd;
-    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
-
-
+            box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
             p {
                 display: inline-block;
                 color: lightpink;
@@ -252,23 +341,21 @@ p .smiley {
                 margin-bottom: 0;
                 margin-right: 2px;
             }
-
             button {
                 background: lavender;
                 border: 3px solid grey;
                 padding: 0;
                 margin: 0px;
-                right:0;
+                right: 0;
                 color: maroon;
                 width: 30px;
                 height: 30px;
                 line-height: 24px;
                 font-size: 24px;
             }
-
             button:focus {
-                outline:none;
+                outline: none;
             }
         }
     }
- }
+}

@@ -41,6 +41,62 @@ import _ from 'underscore'
 import Firebase from 'firebase'
 
 function app () {
+    
+var SplashPage = React.createClass({
+
+    email: '',
+    password: '',
+
+    _handleEmailTyping: function(e) {
+        this.email = e.target.value
+    },
+
+    _handlePasswordTyping: function(e) {
+        this.password = e.target.value
+        console.log(this.password)
+    },
+
+    _handleLogIn: function() {
+        this.props.loggerInner(this.email,this.password)
+    },
+
+    _handleSignUp: function() {
+        this.props.signerUpper(this.email,this.password)
+    },
+
+    render: function() {
+        console.log(this)
+        var errorMsg = ''
+        if (this.props.error !== null) 
+        errorMsg = "*Please try again. Your email address may already be in use."
+        return (
+            <div className="splash">
+                <Header />
+                <div className="loginContainer">
+                    <p  className="error">{errorMsg}</p>
+                    <input placeholder="e-mail"className="splashUser" onChange={this._handleEmailTyping} />
+                    <input placeholder="password"className="splashPass" type="password" onChange={this._handlePasswordTyping} />
+                    <button className="buttonUser"onClick={this._handleLogIn} >log in</button>
+                    <button className="buttonPass" onClick={this._handleSignUp} >sign up</button>
+                </div>
+            </div>
+        )
+    }
+})
+
+var Header = React.createClass ({
+
+      render:function(){
+        var smiley = "  \u270D "
+          return (
+            <div className='header'>
+              <h1>To-Do List{smiley}</h1>
+              <p className="tagLine">Let's make a big To-Do</p>
+            </div>    
+          )
+      }
+    })
+     
 
     var ItemModel = Backbone.Model.extend({
         defaults: {
@@ -54,12 +110,15 @@ function app () {
         }
     })
 
+
     var TodoCollection = Backbone.Firebase.Collection.extend({
-        model: ItemModel,
-        initialize: function() {
-            this.url = `https://katrinatodolist.firebaseio.com/tasks`
-        }
+      model: ItemModel,
+      url: "https://katrinatodolist.firebaseio.com/users",
+      initialize: function(uid) {
+        this.url = `https://katrinatodolist.firebaseio.com/users/${uid}/tasks`
+      }
     })
+
     
     var ToDoView = React.createClass({
 
@@ -104,6 +163,9 @@ function app () {
 
             return (
                 <div className="todoView">
+                  <div className="log">
+                    <a href="#logout">log out</a>
+                    </div>
                     <Tabs updater={this._updater} showing={this.state.showing} />
                     <ItemAdder adderFunc={this._addItem}/>
                     <TodoList updater={this._updater} delete={this._delete} todoColl={coll}/>
@@ -152,7 +214,6 @@ function app () {
 
         }
     }
-
             return (
                 <div onClick={this._changeRoute} style={styleObj} className="tab">
                     <p>{this.props.type}</p>
@@ -308,10 +369,87 @@ function app () {
 
     var TodoRouter = Backbone.Router.extend({
             routes: {
-                "*default": "listView",
                 "done": "doneView",
-                "incomplete": "incompleteView"
+                "incomplete": "incompleteView",
+                "dash": "showDashboard",
+                "logout": "handleLogOut",
+                "splash": "showSplashPage"
             },
+
+             initialize: function() {
+        this.ref = new Firebase("https://katrinatodolist.firebaseio.com")
+        var auth = this.ref.getAuth()
+        console.log(auth)
+        if (!auth) location.hash = "splash"
+
+        this.on("all",function() {
+          if (!this.ref.getAuth()) location.hash = "splash"
+        }, this)
+      },
+
+      handleLogOut: function() {
+        this.ref.unauth()
+        location.hash = "splash"
+      },
+
+      showDashboard: function() {
+         var tc = new TodoCollection(this.ref.getAuth().uid)
+
+        tc.fetch({
+        })
+          
+        DOM.render(<ToDoView showing="list" email={this.ref.getAuth().password.email} todoColl={tc} />, document.querySelector('.container'))
+      },
+
+      showSplashPage: function() {
+        var boundSignerUpper = this._signUserUp.bind(this)
+        var boundLoggerInner = this._logUserIn.bind(this)
+
+        DOM.render(<SplashPage loggerInner={boundLoggerInner} error={null} signerUpper={boundSignerUpper} />, document.querySelector('.container'))
+      },
+
+      _logUserIn: function(submittedEmail,submittedPassword) {
+        var ref = this.ref
+        var handler = function(error, authData) {
+          if (error) {
+            console.log("Login Failed!", error);
+          } else {
+            console.log("Authenticated successfully with payload:");
+            console.log(authData)
+            location.hash = "dash"
+          }
+        }
+
+        ref.authWithPassword({
+          email    : submittedEmail,
+          password : submittedPassword
+        }, handler);
+      },
+
+      _signUserUp: function(submittedEmail,submittedPassword) {
+          var ref = this.ref
+          var boundSignerUpper = this._signUserUp.bind(this)
+          var boundLoggerInner = this._logUserIn.bind(this)
+          var storeUser = function(userData) {
+            ref.child('users').child(userData.uid).set({email:submittedEmail})
+          }
+
+          var handler = function(error, userData) {
+            if (error) {
+              console.log("Error creating user:", error);
+              DOM.render(<SplashPage error={error} signerUpper={boundSignerUpper} loggerInner={boundLoggerInner} />, document.querySelector('.container'))
+            } else {
+              console.log("Successfully created user account with uid:", userData.uid);
+              storeUser(userData)
+              boundLoggerInner(submittedEmail,submittedPassword)
+            }
+          }
+
+          ref.createUser({
+            email    : submittedEmail,
+            password : submittedPassword
+          }, handler);          
+      },
 
             incompleteView: function() {
                 var tc = new TodoCollection()
@@ -322,17 +460,11 @@ function app () {
                 DOM.render( <ToDoView showing="done" todoColl ={tc}/>,document.querySelector('.container'))
                     },
 
-            listView: function() {
-                var tc = new TodoCollection()
-                DOM.render( <ToDoView showing="list" todoColl ={tc}/>,document.querySelector('.container'))
-                    },
-
-                    initialize: function() {
-                        Backbone.history.start()
-                    }
             }) 
 
     var pr = new TodoRouter()
+
+    Backbone.history.start()
 
     }
 
