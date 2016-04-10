@@ -171,15 +171,16 @@ a:hover {
 }
 
 .error {
-    margin-top: 110px;
+    margin-top: -130px;
       top: 490px;
-  margin-left: 320px;
+      padding:0;
+    margin-left: 30%;
+    margin-right: 30%;
+    text-align: center;
     font-size: 20px;
     background: #fff;
-    text-align: center;
     color: lightpink; 
     font-weight: bold;
-    width: 155px;
     border: 1px dashed #ddd;
     box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee; 
   }
@@ -228,19 +229,20 @@ a:hover {
   
 }
 .tagLine {
-    position: relative;
-    top: 128px;
+      margin-top: 190px;
+      top: 490px;
+  margin-left: 25%;
+  margin-bottom:0;
+  z-index: -3;
     font-size: 20px;
-    margin: auto;
-    background: grey;
+    background: #fff;
     text-align: center;
-    vertical-align: center;
-    color: lightpink;
+    color: lightpink; 
     font-weight: bold;
-    width: 220px;
+    width: 155px;
     border: 1px dashed #ddd;
-    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee;
-}
+    box-shadow: 0 0 0 3px #fff, 0 0 0 5px #ddd, 0 0 0 10px #fff, 0 0 2px 10px #eee; 
+  }
 
 
  h1 {
