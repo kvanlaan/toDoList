@@ -100,13 +100,12 @@ var Header = React.createClass ({
 
     var ItemModel = Backbone.Model.extend({
         defaults: {
+            delete:false,
             description: "",
             date: "",
             done: false,
             display: "inline",
-            placeholderDesc: "About:",
-            delete:false
-
+            placeholderDesc: "About:"
         }
     })
 
@@ -122,27 +121,30 @@ var Header = React.createClass ({
     
     var ToDoView = React.createClass({
 
-          _addItem: function(taskName) {
-                var mod = new ItemModel({text:taskName})
+        _addItem: function(taskName) {
+            console.log('adding item')
+            var mod = new ItemModel({text:taskName})
             this.state.todoColl.add(mod.attributes)
             this._updater()
         },
-      
-         _delete: function(){
-           this.state.todoColl = this.state.todoColl.where({delete:false})
-            this._updater()
-        },
+
+        _deleter: function(){
+          var models = this.state.todoColl.where({delete: true}) 
+          this.state.todoColl.remove(models)
+      },
 
         _updater: function(){
+         console.log('todoColl', this.state.todoColl)
+         // var removeModel = this.state.todoColl.where({delete:true})
              this.setState({
                 todoColl: this.state.todoColl,
-                done: this.state.todoColl.where({done:true}),
-                incomplete: this.state.todoColl.where({done:false}),
+                done: this.state.todoColl.where({done:true, delete:false}),
+                incomplete: this.state.todoColl.where({done:false, delete:false}),
                 showing: location.hash.substr(1)
             })           
         },
 
-        componentWillMount: function() {
+        componentDidMount: function() {
             var self = this
             this.props.todoColl.on('sync',function(){self.forceUpdate()})
         },
@@ -166,9 +168,9 @@ var Header = React.createClass ({
                   <div className="log">
                     <a href="#logout">log out</a>
                     </div>
-                    <Tabs updater={this._updater} showing={this.state.showing} />
+                    <Tabs deleter={this._deleter} updater={this._updater} showing={this.state.showing} />
                     <ItemAdder adderFunc={this._addItem}/>
-                    <TodoList updater={this._updater} delete={this._delete} todoColl={coll}/>
+                    <TodoList deleter={this._deleter} updater={this._updater}  todoColl={coll}/>
                 </div>  
                 )
         }
@@ -177,7 +179,7 @@ var Header = React.createClass ({
 
         
         _genTab: function(tabType, i) {
-            return <Tab updater={this.props.updater} key={i} type={tabType} showing={this.props.showing} />
+            return <Tab deleter={this.props.deleter} updater={this.props.updater} key={i} type={tabType} showing={this.props.showing} />
         },
         render: function() {
             return (
@@ -227,8 +229,13 @@ var Header = React.createClass ({
         _handleKeyDown: function(keyEvent) {
             if (keyEvent.keyCode === 13) {
                 var guestName = keyEvent.target.value
+                console.log('guestName', guestName)
+                if(guestName.length > 1){
                 this.props.adderFunc(guestName)
                 keyEvent.target.value = ''
+              } else{
+                console.log('failed')
+              }
             }
         },
 
@@ -240,20 +247,33 @@ var Header = React.createClass ({
     var TodoList = React.createClass({
 
         _makeItem: function(model,i) {
+          console.log('making item')
             console.log(model, i)
-            return <Item delete={this.props.delete} key={i} updater={this.props.updater} itemModel={model} />
+            if(model.get('text')){
+            return <Item  key={i} deleter={this.props.deleter} updater={this.props.updater} itemModel={model} />
+          }else {
+            console.log('failed')
+          }
         },
 
         render: function() {
+          // var content=""
+          // if(this.props.todoColl.length > 0){
+          //   content= this.props.todoColl.map(this._makeItem)
+          // } else {
+          //   content = ""
+          // }
             return (
-                <div delete ={this.props.delete} todoColl={this.props.todoColl} className="todoList">
-                    {this.props.todoColl.map(this._makeItem)}
+                <div todoColl={this.props.todoColl} className="todoList">
+                  {this.props.todoColl.map(this._makeItem)}
                 </div>
                 )
-        }
+          }
+          
     })
 
     var Item = React.createClass({
+
          _handleDue: function(keyEvent) {
             if (keyEvent.keyCode === 13) {
                 var inputDate = keyEvent.target.value
@@ -274,16 +294,15 @@ var Header = React.createClass ({
 
             }
         },
-        _deleteItem: function(){
-                this.props.itemModel.set({display: "none"})
-               this.props.itemModel.set({delete:true})
-               this.props.delete
-              this.props.updater()
+        _deleteItem: function(clickEvent){
+          console.log('deleting')
+               this.props.itemModel.set({delete: true})
+               this.props.deleter()
+               this.props.updater()
         },
         _editDesc: function(){
-             this.props.itemModel.set({placeholderDesc: this.props.itemModel.get('description')})
+            this.props.itemModel.set({placeholderDesc: this.props.itemModel.get('description')})
             this.props.itemModel.set({description: ""})
-
                       this.props.updater()
 
             },
@@ -346,7 +365,7 @@ var Header = React.createClass ({
             }        
 
             return (
-                <div style={itemObj} className="todoItem"  date="">
+                <div  style={itemObj} className="todoItem"  date="">
               
                     <p style={pObj}>{this.props.itemModel.get('text')}</p>
                     <button style={edescObj} onClick={this._editDesc}>{"\u270e"}</button>
